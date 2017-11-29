@@ -1,0 +1,5 @@
+#GitHub操作流程
+
+git add xxx.xxx
+git commit -m "note thing"
+git push origin master
