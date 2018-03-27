@@ -5,7 +5,7 @@
 
 ## 环境
 
-Python2.7,用到的库包括: numpy,cv2,time,sys,os,PIL(主要用到Image),skimage,matplotlib,scipy,csv,random,math,operator
+Python3.6.1,用到的库包括: numpy,cv2,time,sys,os,PIL(主要用到Image),skimage,matplotlib,scipy,csv,random,math,operator
 
 
 ## 文件说明
