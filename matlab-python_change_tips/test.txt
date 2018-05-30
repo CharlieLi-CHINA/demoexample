@@ -1,0 +1,50 @@
+import numpy as np
+from PIL import Image
+import cv2
+import math
+nbin = 32;            #number of bins
+alpha = 0.15;         #parameter of LSH, [0.0,1.0]
+k = 0.1;#parameter of illumination invariant features
+#img = cv2.imread('test1.jpg',cv2.IMREAD_GRAYSCALE)
+#img = np.array(Image.open("test1.jpg"))#读取图片并转为数组
+img = cv2.imread("test1.jpg")  
+  
+imgb = np.zeros((img.shape[0],img.shape[1]), dtype=img.dtype)  
+imgg = np.zeros((img.shape[0],img.shape[1]), dtype=img.dtype)  
+imgr = np.zeros((img.shape[0],img.shape[1]), dtype=img.dtype)  
+  
+imgb[:,:] = img[:,:,0]  
+imgg[:,:] = img[:,:,1]  
+imgr[:,:] = img[:,:,2]  
+def LSH(img,sigma,nbin):
+    print (img.shape)#输出数组的各维度长度以及类型,img.dtype
+    color_max = 255
+    color_range= np.arange(0,255+255/32,255/32)
+
+    alpha_x = math.exp(-math.sqrt(2)/(sigma*img.shape[0]))
+    alpha_y = math.exp(-math.sqrt(2)/(sigma*img.shape[1]))
+    q_mtx = np.zeros((img.shape[0], img.shape[1], nbin))
+    print(alpha_x , alpha_y)
+    print(color_range)
+    print(q_mtx.shape)
+    
+    
+    for i in range(0,nbin):
+        tmp_img = img
+        
+        
+    print(tmp_img.shape)
+    LSH(imgb,alpha,nbin)
+    
+    
+    
+    
+(1120, 1376)
+0.9916173937584056 0.9931716102335835
+[  0.        7.96875  15.9375   23.90625  31.875    39.84375  47.8125
+  55.78125  63.75     71.71875  79.6875   87.65625  95.625   103.59375
+ 111.5625  119.53125 127.5     135.46875 143.4375  151.40625 159.375
+ 167.34375 175.3125  183.28125 191.25    199.21875 207.1875  215.15625
+ 223.125   231.09375 239.0625  247.03125 255.     ]
+(1120, 1376, 32)
+(1120, 1376)
