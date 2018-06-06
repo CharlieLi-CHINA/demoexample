@@ -35,6 +35,49 @@ TypeError: dst is not a numpy array, neither a scalar
 
 除此外，晚上回来后由于要完成实验室的项目，所以要搜集图像，然后标注，这个过程中需要命名为标注的信息以及裁剪，所以晚上又查了自己的以前的代码，改进下，争取做个能做到区域截图、自动命名的小脚本，而自己也有了用脚本来替代人工的想法，不想做那些重复性工作。
 
+## 20180606 h5py问题
+
+在import tensorflow以及t5py时遇到问题：
+
+> D:\Anaconda2\envs\py3\lib\site-packages\h5py\__init__.py:34: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+
+解决办法
+
+直接pip安装 
+> pip install h5py==2.8.0rc1，但是又出现新问题 
+
+> [WinError 17] 系统无法将文件移到不同的磁盘驱动器 的问题
+
+以至于装错，所以解决的新办法是：
+在C:\Windows\System32下的cmd管理员运行cmd.exe，然后在py3的环境（activate py3）下
+
+> pip install h5py==2.8.0rc1 --user
+
+问题解决了
+
+
+> C:\WINDOWS\system32>activate py3
+
+> (py3) C:\WINDOWS\system32>pip install h5py==2.8.0rc1 --user
+> Collecting h5py==2.8.0rc1
+  Downloading https://pypi.doubanio.com/packages/9e/cf/a6e35cc6273c8be51f3b02cc2aac73ab15e9e41338e1a3cb46118650de8c/h5py-2.8.0rc1-cp36-cp36m-win_amd64.whl (2.3MB)
+    100% |████████████████████████████████| 2.3MB 422kB/s
+Requirement already satisfied: six in d:\anaconda2\envs\py3\lib\site-packages (from h5py==2.8.0rc1)
+Requirement already satisfied: numpy>=1.7 in d:\anaconda2\envs\py3\lib\site-packages (from h5py==2.8.0rc1)
+Installing collected packages: h5py
+Successfully installed h5py-2.8.0rc1
+You are using pip version 9.0.1, however version 10.0.1 is available.
+You should consider upgrading via the 'python -m pip install --upgrade pip' command.
+
+> (py3) C:\WINDOWS\system32>
+
+
+之后，问题解决了。
+
+
 ## 后续待更新
+
+
 
 
