@@ -76,8 +76,42 @@ You should consider upgrading via the 'python -m pip install --upgrade pip' comm
 之后，问题解决了。
 
 
-## 后续待更新
+## 20180607周四 装深度学习框架问题
 
+第一个问题是pip install pytorch问题，由于pip里面没有相应的东西，所以只能走官网途径，通过pip官网提供的网址进行下载安装，并顺便pip install torchvision，如下
 
+    pip install http://download.pytorch.org/whl/cpu/torch-0.4.0-cp36-cp36m-win_amd64.whl 
+    pip install torchvision
 
+这个问题其实解决的不算啥；
+
+第二个问题是安装lmdb，这个也用pip安装，也能下载，但是到了最后阶段会有个问题，就是这个
+
+> error: Microsoft Visual C++ 14.0 is required. Get it with "Microsoft Visual 
+
+也去网上搜了下，都是主张自己去下载相应whl文件回来再pip安装，所以下载完后，我就cd到这个文件目录，再pip安装，如下：
+
+    pip install lmdb-0.94-cp36-cp36m-win_amd64.whl
+
+而在找的时候发现，不能直接找lmdb这个模块，而是要找pylmdb，否则找不到。
+
+其实遇到这类问题，可以先自己上这个网站[https://www.lfd.uci.edu/~gohlke/pythonlibs/](https://www.lfd.uci.edu/~gohlke/pythonlibs/) 上去找有么有相应的whl文件，再在文件所在目录pip安装即可
+
+以上都是安装依赖包的问题，其实还有个问题，就是今天在试着跑rcnn.pytorch里面的demo-edit.Py文件时，发现有个问题，其出现的错误最后是：
+
+> AttributeError: module 'torch._C' has no attribute '_cuda_getDevice'
+
+我分析下，因为这个模型训练用gpu，而我是在cpu的环境下，pytorch也是cpu版本，所以就会出错，刚好google搜到个同样的[问题](https://www.google.com.hk/search?q=AttributeError%3A+module+%27torch._C%27+has+no+attribute+%27_cuda_getDevice%27&oq=AttributeError%3A+module+%27torch._C%27+has+no+attribute+%27_cuda_getDevice%27&aqs=chrome..69i57j69i58j69i60l3.242j0j4&sourceid=chrome&ie=UTF-8)，所以解决了，[办法](https://github.com/pytorch/pytorch/issues/5286)参考如下：
+
+将类似于语句
+
+    model.load_state_dict(torch.load(file))
+改为
+
+    model.load_state_dict(torch.load(file, map_location='cpu'))
+即可
+
+也可以在cpu版本下跑gpu训练好的模型
+
+## 待更新
 
