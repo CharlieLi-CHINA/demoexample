@@ -113,5 +113,98 @@ You should consider upgrading via the 'python -m pip install --upgrade pip' comm
 
 也可以在cpu版本下跑gpu训练好的模型
 
-## 待更新
+## 20180608周五 ctpn运行
+
+ctpn运行出问题（未解决）：
+
+
+    runfile('D:/Anaconda2/envs/py3/liqilv_bigdata_engineer_py3/text-detection-ctpn/ctpn/demo.py', wdir='D:/Anaconda2/envs/py3/liqilv_bigdata_engineer_py3/text-detection-ctpn/ctpn')
+    Traceback (most recent call last):
+
+      File "<ipython-input-16-991feae81c3c>", line 1, in <module>
+        runfile('D:/Anaconda2/envs/py3/liqilv_bigdata_engineer_py3/text-detection-ctpn/ctpn/demo.py', wdir='D:/Anaconda2/envs/py3/liqilv_bigdata_engineer_py3/text-detection-ctpn/ctpn')
+
+      File "D:\Anaconda2\envs\py3\lib\site-packages\spyder\utils\site\sitecustomize.py", line 688, in runfile
+        execfile(filename, namespace)
+
+      File "D:\Anaconda2\envs\py3\lib\site-packages\spyder\utils\site\sitecustomize.py", line 101, in execfile
+        exec(compile(f.read(), filename, 'exec'), namespace)
+
+      File "D:/Anaconda2/envs/py3/liqilv_bigdata_engineer_py3/text-detection-ctpn/ctpn/demo.py", line 8, in <module>
+        from lib.networks.factory import get_network
+
+      File "D:\Anaconda2\envs\py3\liqilv_bigdata_engineer_py3\text-detection-ctpn\lib\__init__.py", line 1, in <module>
+        from . import fast_rcnn
+
+      File "D:\Anaconda2\envs\py3\liqilv_bigdata_engineer_py3\text-detection-ctpn\lib\fast_rcnn\__init__.py", line 2, in <module>
+        from . import train
+
+      File "D:\Anaconda2\envs\py3\liqilv_bigdata_engineer_py3\text-detection-ctpn\lib\fast_rcnn\train.py", line 5, in <module>
+        from ..roi_data_layer.layer import RoIDataLayer
+
+      File "D:\Anaconda2\envs\py3\liqilv_bigdata_engineer_py3\text-detection-ctpn\lib\roi_data_layer\__init__.py", line 1, in <module>
+        from . import roidb
+
+      File "D:\Anaconda2\envs\py3\liqilv_bigdata_engineer_py3\text-detection-ctpn\lib\roi_data_layer\roidb.py", line 5, in <module>
+        from lib.utils.bbox import bbox_overlaps
+
+      File "D:\Anaconda2\envs\py3\liqilv_bigdata_engineer_py3\text-detection-ctpn\lib\utils\__init__.py", line 4, in <module>
+        from . import bbox
+
+      File "D:\Anaconda2\envs\py3\lib\site-packages\pyximport\pyximport.py", line 445, in load_module
+        language_level=self.language_level)
+
+      File "D:\Anaconda2\envs\py3\lib\site-packages\pyximport\pyximport.py", line 232, in load_module
+        raise exc.with_traceback(tb)
+
+      File "D:\Anaconda2\envs\py3\lib\site-packages\pyximport\pyximport.py", line 216, in load_module
+        inplace=build_inplace, language_level=language_level)
+
+      File "D:\Anaconda2\envs\py3\lib\site-packages\pyximport\pyximport.py", line 192, in build_module
+        reload_support=pyxargs.reload_support)
+
+      File "D:\Anaconda2\envs\py3\lib\site-packages\pyximport\pyxbuild.py", line 102, in pyx_to_dll
+        dist.run_commands()
+
+      File "D:\Anaconda2\envs\py3\lib\distutils\dist.py", line 955, in run_commands
+        self.run_command(cmd)
+
+      File "D:\Anaconda2\envs\py3\lib\distutils\dist.py", line 974, in run_command
+        cmd_obj.run()
+
+      File "D:\Anaconda2\envs\py3\lib\site-packages\Cython\Distutils\old_build_ext.py", line 185, in run
+        _build_ext.build_ext.run(self)
+
+      File "D:\Anaconda2\envs\py3\lib\distutils\command\build_ext.py", line 339, in run
+        self.build_extensions()
+
+      File "D:\Anaconda2\envs\py3\lib\site-packages\Cython\Distutils\old_build_ext.py", line 193, in build_extensions
+        self.build_extension(ext)
+
+      File "D:\Anaconda2\envs\py3\lib\distutils\command\build_ext.py", line 533, in build_extension
+        depends=ext.depends)
+
+      File "D:\Anaconda2\envs\py3\lib\distutils\_msvccompiler.py", line 304, in compile
+        self.initialize()
+
+      File "D:\Anaconda2\envs\py3\lib\distutils\_msvccompiler.py", line 197, in initialize
+        vc_env = _get_vc_env(plat_spec)
+
+      File "D:\Anaconda2\envs\py3\lib\distutils\_msvccompiler.py", line 85, in _get_vc_env
+        raise DistutilsPlatformError("Unable to find vcvarsall.bat")
+
+    ImportError: Building module lib.utils.bbox failed: ['distutils.errors.DistutilsPlatformError: Unable to find vcvarsall.bat\n']
+
+
+
+主要是出现 
+> ImportError: Building module lib.utils.bbox failed: ['distutils.errors.DistutilsPlatformError: Unable to find vcvarsall.bat\n']
+问题，经过搜索，一个可能是vs版本要14以上，也即是要装个15版本的，还有就是注册表那里要编辑
+
+查看 链接  [1](https://jingyan.baidu.com/article/adc815138162e8f723bf7387.html)    [2](https://blog.csdn.net/donger_soft/article/details/44838109)  
+
+
+
+## 后续待更新
+
 
