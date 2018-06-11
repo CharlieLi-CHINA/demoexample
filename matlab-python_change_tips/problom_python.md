@@ -205,6 +205,98 @@ ctpn运行出问题（未解决）：
 
 
 
+## 20180611周一 装双系统win10+deepin
+
+由于要跟同事的开发环境一致，不得不装个双系统，在ubuntu和deepin之间考虑了下，并且目睹了一位同事在ubuntu上装东西各种报错，最后还是决定装deepin了。
+
+步骤
+
+- 分区（[教程](https://jingyan.baidu.com/article/425e69e6bbd0c7be14fc164a.html)），这个简单，在win10里面的搜索框里面搜索  磁盘  ，会出现个 创建并格式化硬盘分区 ，然后点击去即可以，同样，也可以在控制面板找到这个东西；然后按照下图所示，在你想要创建分区的盘里面 压缩卷 并设好大小 ，待出现个未分配的磁盘分区后，新建简单卷，然后给定容量，就可以很容易地弄好分区了。
+
+![](http://img.xitongcheng.com/upload/image/20160107/20160107171106_42992.jpg)
+![](http://img.xitongcheng.com/upload/image/20160107/20160107171117_30780.jpg)
+![](http://img.xitongcheng.com/upload/image/20160107/20160107171131_45277.jpg)
+由于这个分区是给装deepin，所以就没有弄分配的磁盘盘符，故而新建个简单卷就可以了。
+
+- 分完区，然后就是关闭win10的快速启动，教程可以看[这里](https://jingyan.baidu.com/article/48b558e30ca7977f38c09a95.html) ，简单来说，就是在电源设置那里的电源选项界面将快速启动关闭而已，以免等下重启电脑的时候默认启动windows而不是U盘。
+- 这里直接弄个U盘启动即可，有个U盘启动，然后开机时进入bios，我的是华硕，所以同时f2或者f10、f12进入，好像忘了哪一个，反正百度下即可；接下来即是选语言之类的，傻瓜式安装，然后重启，选择进入deepin（通常是第一个系统，windows还在它下面）即可。当然了，密码什么的要设好。
+
+使用
+
+感觉界面挺清爽，和mac有的一拼，直观上比ubuntu好用一点点。
+
+然后就是各种安装了，一开始就要装pycharm，同事说做工程还是不错的，而且可以和服务器联机运行之类的，社区版本免费，专业版淘宝很便宜。
+
+相比于windows，它装python的库是挺方便的。
+而在opencv来说，它可以本地编译，然后各种功能比较齐全，参考[链接](http://www.cnblogs.com/arkenstone/p/6490017.html) 。
+然后是cmake
+
+    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=$(python -c "import sys; print sys.prefix") -D PYTHON_EXECUTABLE=$(which python) -D OPENCV_EXTRA_MODULES_PATH=/opt/opencv/opencv_contrib/modules -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_CUDA=OFF -D INSTALL_PYTHON_EXAMPLES=OFF ..
+
+当然了，也要具体情况具体调整
+
+    charlie@charlie-PC:~/Desktop/opencv$ sudo mv opencv/ /opt
+    [sudo] charlie 的密码：
+    charlie@charlie-PC:~/Desktop/opencv$ cd /opt/opencv
+    charlie@charlie-PC:/opt/opencv$ mkdir build
+    charlie@charlie-PC:/opt/opencv$ cd build/
+    charlie@charlie-PC:/opt/opencv/build$ cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D PYTHON_EXECUTABLE=$(which python3) -D OPENCV_EXTRA_MODULES_PATH=/opt/opencv/opencv_contrib/modules -D WITH_TBB=ON -D WITH_V4L=ON -D WITH_CUDA=OFF -D INSTALL_PYTHON_EXAMPLES=OFF ..
+    -- The CXX compiler identification is GNU 6.4.0
+    -- The C compiler identification is GNU 6.4.0
+    -- Check for working CXX compiler: /usr/bin/c++
+    -- Check for working CXX compiler: /usr/bin/c++ -- works
+    -- Detecting CXX compiler ABI info
+    -- Detecting CXX compiler ABI info - done
+    -- Detecting CXX compile features
+    -- Detecting CXX compile features - done
+    -- Check for working C compiler: /usr/bin/cc
+    -- Check for working C compiler: /usr/bin/cc -- works
+    -- Detecting C compiler ABI info
+    -- Detecting C compiler ABI info - done
+    -- Detecting C compile features
+    -- Detecting C compile features - done
+    -- Performing Test HAVE_CXX11 (check file: cmake/checks/cxx11.cpp)
+    -- Performing Test HAVE_CXX11 - Success
+    -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.5.4", minimum required is "2.7") 
+    -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.5.4", minimum required is "3.4") 
+    -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.5m.so (found suitable exact version "3.5.4rc1") 
+    -- Looking for ccache - not found
+    -- Performing Test HAVE_CXX_FSIGNED_CHAR
+    -- Performing Test HAVE_CXX_FSIGNED_CHAR - Success
+    -- Performing Test HAVE_C_FSIGNED_CHAR
+    -- Performing Test HAVE_C_FSIGNED_CHAR - Success
+    -- Performing Test HAVE_CXX_W
+    -- Performing Test HAVE_CXX_W - Success
+    -- Performing Test HAVE_C_W
+    -- Performing Test HAVE_C_W - Success
+    -- Performing Test HAVE_CXX_WALL
+    -- Performing Test HAVE_CXX_WALL - Success
+    -- Performing Test HAVE_C_WALL
+    -- Performing Test HAVE_C_WALL - Success
+    -- Performing Test HAVE_CXX_WERROR
+
+将解压后的opencv文件去掉master，将其扩展移进去里面，然后将它整体移到opt文件夹，建立build文件夹，在里面编译，cmake，详细见上面的改进。
+
+    charlie@charlie-PC:~/Downloads$ sudo pip3 install lmdb-0.94-cp35-cp35m-win_amd64.whl 
+    lmdb-0.94-cp35-cp35m-win_amd64.whl is not a supported wheel on this platform.
+    charlie@charlie-PC:~/Downloads$ cd ..
+    charlie@charlie-PC:~$ sudo pip3 install -i https://pypi.tuna.tsinghua.edu.cn/simple lmdb
+    Collecting lmdb
+      Downloading https://pypi.tuna.tsinghua.edu.cn/packages/cb/31/5be8f436b56733d9e69c721c358502f4d77b627489a459978686be7db65f/lmdb-0.94.tar.gz (4.0MB)
+        100% |████████████████████████████████| 4.0MB 173kB/s 
+    Building wheels for collected packages: lmdb
+      Running setup.py bdist_wheel for lmdb ... done
+      Stored in directory: /root/.cache/pip/wheels/bf/c8/0f/327d1a7ade5ae087c242d80f079a899c2ab842dbbd6c1a53a1
+    Successfully built lmdb
+    Installing collected packages: lmdb
+    Successfully installed lmdb-0.94
+    charlie@charlie-PC:~$ 
+
+linux安装lmdb不像Windows那样子，直接pip就可以
+
+还有，装tesseract也是，好像是直接pip3还是apt就可以，挺方便。
+
+
 ## 后续待更新
 
 
