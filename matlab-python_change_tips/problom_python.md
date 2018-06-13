@@ -297,6 +297,139 @@ linux安装lmdb不像Windows那样子，直接pip就可以
 还有，装tesseract也是，好像是直接pip3还是apt就可以，挺方便。
 
 
+## 20180613周三 img操作问题
+
+在运行同事的代码，然后自己改进下，想要找到所有保卫框中坐标最大的那个（对应着身份证数字），然后想要保存此坐标，自己做个裁剪图算法验证下，然后发现，我使用原来的输入图像进行切片，发现总与ctpn做的切片得到的片段不一样，后来自己将ctpn运行过程中的图像进行鼠标选点显示坐标，发现看似一样的两幅图（原图与ctpn处理后的图）同一个地方的坐标点相差一百多两百，怪不得使用其坐标没有什么作用，对应不上。后来在查看ctpn的文件时，在其**./ctpn/ctpn/model.py**发现下面代码：
+
+        # 进行文本识别
+    def ctpn(img):
+        """
+        text box detect
+        """
+        scale, max_scale = Config.SCALE, Config.MAX_SCALE
+        # 对图像进行resize，输出的图像长宽
+        img, f = resize_im(img, scale=scale, max_scale=max_scale)
+        scores, boxes = test_ctpn(sess, net, img)
+        return scores, boxes, img
+原来对输入的图像是做一个变换的，而我的裁剪代码：
+
+    def cut_guding(path):
+        img = cv2.imread(path)
+        boxx = [496, 646, 1024, 658, 495, 688, 1024, 700]
+        boxx = np.array(boxx)
+        x = np.sort([boxx[0], boxx[2], boxx[4], boxx[6]])
+
+        y = np.sort([boxx[1], boxx[3], boxx[5], boxx[7]])
+
+        cv2.imwrite("lihsi.jpg", img[y[0]:y[-1], x[0]:x[-1], :])
+        print(img.shape[:2])
+        
+    
+以及
+
+    #coding=utf-8
+    from ctpn.text_detect import text_detect
+    import cv2
+    import os
+    import sys
+    from math import *
+    # sys.path.insert(0, '/home/walker/PycharmProjects/ctpn_crnn/crnnpytorch')
+    # import demoedit
+    import numpy as np
+
+
+
+    def sort_box(box):
+        """
+        对box排序,及页面进行排版
+        text_recs[index, 0] = x1
+            text_recs[index, 1] = y1
+            text_recs[index, 2] = x2
+            text_recs[index, 3] = y2
+            text_recs[index, 4] = x3
+            text_recs[index, 5] = y3
+            text_recs[index, 6] = x4
+            text_recs[index, 7] = y4
+        """
+
+        box = sorted(box, key=lambda x: sum([x[1], x[3], x[5], x[7]]))
+        sum_0 = 0
+        #print("box lenth",len(box),box[0])
+        for i in range(0,len(box)): #寻找身份证数字那一栏的保卫框，以纵坐标为sum
+            sum_x = box[i][0]+box[i][2]+box[i][4]+box[i][6]
+            if (sum_x > sum_0):
+                sum_0 = sum_x
+                box_max = i
+            print("sum_x_of_box)",sum_x)
+        print("max box",box[box_max])
+        return box
+
+    def image_split(img, text_recs):
+        images=[]
+        text_recs=sort_box(text_recs)
+        text_recs=np.array(text_recs)
+        i=0
+        for text_rec in text_recs:
+            x = np.sort(text_rec[[0,2,4,6]])
+            y = np.sort(text_rec[[1,3,5,7]])
+            x[x<0]=0
+            y[y<0]=0
+            images.append(img[y[0]:y[-1], x[0]:x[-1], :])
+            cv2.imwrite(os.path.join("picresults", str(i)+".jpg"), img[y[0]:y[-1], x[0]:x[-1], :])
+            i+=1
+    def picture_rotate(image):
+
+        #image = cv2.imread(path)
+        #cv2.imshow("original",image)
+        
+        height,width = image.shape[:2]
+        center = (width // 2, height // 2)
+        degree = 90  # 旋转角度,负数表示顺时针,正数表示逆时针
+        # 旋转后的尺寸
+        heightNew = int(width * fabs(sin(radians(degree))) + height * fabs(cos(radians(degree))))
+        widthNew = int(height * fabs(sin(radians(degree))) + width * fabs(cos(radians(degree))))
+        #center = (0,0)
+
+        M = cv2.getRotationMatrix2D(center,degree,1.0)
+        M[0, 2] += (widthNew - width) / 2  # 重点在这步，目前不懂为什么加这步
+        M[1, 2] += (heightNew - height) / 2  # 重点在这步
+
+        rotated = cv2.warpAffine(image,M,(widthNew,heightNew),borderValue=(255,255,255))
+
+        #cv2.imshow('Rotated by' + ' ' + str(degree) +' ' + 'degrees',rotated)
+        cv2.imwrite("rotated.jpg",rotated)
+
+        #cv2.waitKey(0)
+        return rotated
+    #测试图像
+    #path="./test2.png"
+    path="./23.jpg"
+    # path = "营业执照1.jpg"
+
+    img=cv2.imread(path)
+    h,w = img.shape[:2]
+    print("h,w",h,w)
+    #if (h > w):
+        #img = picture_rotate(img)#如果图片是竖过来的，就旋转过来
+    text_recs, tmp, img=text_detect(img)#经过这个操作，刚开始读入的img是会在在这一步做一个缩放的
+    #print(text_recs[0][0])
+    image_split(img, text_recs)
+    box_xy = sort_box(text_recs)
+
+    #print(sort_box(text_recs))
+    print(box_xy)
+    cv2.imwrite("tmptest.jpg", tmp)
+    cv2.imwrite("imgtest.jpg", img)
+
+发现果然如此，我自己得到的是ctpn处理后的图像
+
+
+经过此次教训，下次在开发时应多注意下
+
+
+
+
+
 ## 后续待更新
 
 
