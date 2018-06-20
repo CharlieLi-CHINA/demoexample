@@ -427,8 +427,183 @@ linux安装lmdb不像Windows那样子，直接pip就可以
 经过此次教训，下次在开发时应多注意下
 
 
+## 问题 20180619周二
+
+标签（空格分隔）： 未分类
 
 
+目的是想将经过ctpn切割后的包含文字的图像中两边空白的区域去掉，然后计划使用投影法统计各列元素，确定切割坐标点，但是对一张图可以，对另外一张图不可以；单张图可以，一堆图不行，不知道为什么。
+
+    /usr/bin/python3.5 /home/charlie/Desktop/liqilv_bigdata_engineer_py3/test/0612.py
+    OpenCV Error: Assertion failed (scn == 3 || scn == 4) in cvtColor, file /opt/opencv/modules/imgproc/src/color.cpp, line 11048
+    ./testpicture/2.jpg
+    Traceback (most recent call last):
+    ./testpicture/1.jpg
+    ./testpicture/7.jpg
+      File "/home/charlie/Desktop/liqilv_bigdata_engineer_py3/test/0612.py", line 380, in <module>
+    ./testpicture/8.jpg
+        touying(path1)
+    ./testpicture/3.jpg
+      File "/home/charlie/Desktop/liqilv_bigdata_engineer_py3/test/0612.py", line 225, in touying
+        GrayImage = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 将BGR图转为灰度图
+    ./testpicture/0.jpg
+    ./testpicture/4.jpg
+    cv2.error: /opt/opencv/modules/imgproc/src/color.cpp:11048: error: (-215) scn == 3 || scn == 4 in function cvtColor
+    ./testpicture/6.jpg
+
+    ./testpicture/5.jpg
+
+
+要不然就是像这样子
+
+
+    charlie@charlie-PC:~/Desktop/ctpn_crnn$ python3 ctpn_test.py 身份证8.jpg
+      File "ctpn_test.py", line 255
+        img2.save(path_file,,'jpeg')
+                            ^
+    SyntaxError: invalid syntax
+    charlie@charlie-PC:~/Desktop/ctpn_crnn$ python3 ctpn_test.py 身份证8.jpg
+    Tensor("Placeholder:0", shape=(?, ?, ?, 3), dtype=float32)
+    Tensor("conv5_3/conv5_3:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("rpn_conv/3x3/rpn_conv/3x3:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("lstm_o/Reshape_2:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("lstm_o/Reshape_2:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("rpn_cls_score/Reshape_1:0", shape=(?, ?, ?, 20), dtype=float32)
+    Tensor("rpn_cls_prob:0", shape=(?, ?, ?, ?), dtype=float32)
+    Tensor("Reshape_2:0", shape=(?, ?, ?, 20), dtype=float32)
+    Tensor("rpn_bbox_pred/Reshape_1:0", shape=(?, ?, ?, 40), dtype=float32)
+    Tensor("Placeholder_1:0", shape=(?, 3), dtype=float32)
+    2018-06-19 20:38:42.979780: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+    Traceback (most recent call last):
+      File "ctpn_test.py", line 311, in <module>
+        main_process(abspath + path)
+      File "ctpn_test.py", line 278, in main_process
+        delete_none_words_zone("./picresults")
+      File "ctpn_test.py", line 248, in delete_none_words_zone
+        x1, x2 = get_words_space(path_file)
+      File "ctpn_test.py", line 98, in get_words_space
+        if number_zeros > 15 and a[i+1] > 0:
+    IndexError: list index out of range
+    charlie@charlie-PC:~/Desktop/ctpn_crnn$ python3 ctpn_test.py 身份证8.jpg
+    Tensor("Placeholder:0", shape=(?, ?, ?, 3), dtype=float32)
+    Tensor("conv5_3/conv5_3:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("rpn_conv/3x3/rpn_conv/3x3:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("lstm_o/Reshape_2:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("lstm_o/Reshape_2:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("rpn_cls_score/Reshape_1:0", shape=(?, ?, ?, 20), dtype=float32)
+    Tensor("rpn_cls_prob:0", shape=(?, ?, ?, ?), dtype=float32)
+    Tensor("Reshape_2:0", shape=(?, ?, ?, 20), dtype=float32)
+    Tensor("rpn_bbox_pred/Reshape_1:0", shape=(?, ?, ?, 40), dtype=float32)
+    Tensor("Placeholder_1:0", shape=(?, 3), dtype=float32)
+    2018-06-19 20:40:39.835308: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+    Traceback (most recent call last):
+      File "ctpn_test.py", line 311, in <module>
+        main_process(abspath + path)
+      File "ctpn_test.py", line 278, in main_process
+        delete_none_words_zone("./picresults")
+      File "ctpn_test.py", line 248, in delete_none_words_zone
+        x1, x2 = get_words_space(path_file)
+      File "ctpn_test.py", line 98, in get_words_space
+        if number_zeros > 10 and a[i+1] > 0:
+    IndexError: list index out of range
+    charlie@charlie-PC:~/Desktop/ctpn_crnn$ python3 ctpn_test.py 身份证8.jpg
+    Tensor("Placeholder:0", shape=(?, ?, ?, 3), dtype=float32)
+    Tensor("conv5_3/conv5_3:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("rpn_conv/3x3/rpn_conv/3x3:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("lstm_o/Reshape_2:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("lstm_o/Reshape_2:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("rpn_cls_score/Reshape_1:0", shape=(?, ?, ?, 20), dtype=float32)
+    Tensor("rpn_cls_prob:0", shape=(?, ?, ?, ?), dtype=float32)
+    Tensor("Reshape_2:0", shape=(?, ?, ?, 20), dtype=float32)
+    Tensor("rpn_bbox_pred/Reshape_1:0", shape=(?, ?, ?, 40), dtype=float32)
+    Tensor("Placeholder_1:0", shape=(?, 3), dtype=float32)
+    2018-06-19 20:45:11.035295: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+    Traceback (most recent call last):
+      File "ctpn_test.py", line 313, in <module>
+        main_process(abspath + path)
+      File "ctpn_test.py", line 280, in main_process
+        delete_none_words_zone("./picresults")
+      File "ctpn_test.py", line 250, in delete_none_words_zone
+        x1, x2 = get_words_space(path_file)
+      File "ctpn_test.py", line 99, in get_words_space
+        if number_zeros > 15 and a[i + 1] > 0:
+    IndexError: list index out of range
+    charlie@charlie-PC:~/Desktop/ctpn_crnn$ python3 ctpn_test.py 身份证8.jpg
+    Tensor("Placeholder:0", shape=(?, ?, ?, 3), dtype=float32)
+    Tensor("conv5_3/conv5_3:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("rpn_conv/3x3/rpn_conv/3x3:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("lstm_o/Reshape_2:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("lstm_o/Reshape_2:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("rpn_cls_score/Reshape_1:0", shape=(?, ?, ?, 20), dtype=float32)
+    Tensor("rpn_cls_prob:0", shape=(?, ?, ?, ?), dtype=float32)
+    Tensor("Reshape_2:0", shape=(?, ?, ?, 20), dtype=float32)
+    Tensor("rpn_bbox_pred/Reshape_1:0", shape=(?, ?, ?, 40), dtype=float32)
+    Tensor("Placeholder_1:0", shape=(?, 3), dtype=float32)
+    2018-06-19 20:49:56.450830: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    Traceback (most recent call last):
+      File "ctpn_test.py", line 313, in <module>
+        main_process(abspath + path)
+      File "ctpn_test.py", line 280, in main_process
+        delete_none_words_zone("./picresults")
+      File "ctpn_test.py", line 250, in delete_none_words_zone
+        x1, x2 = get_words_space(path_file)
+      File "ctpn_test.py", line 99, in get_words_space
+        if number_zeros > 15 and a[i + 1] > 0:
+    IndexError: list index out of range
+    charlie@charlie-PC:~/Desktop/ctpn_crnn$ python3 ctpn_test.py 身份证8.jpg
+    Tensor("Placeholder:0", shape=(?, ?, ?, 3), dtype=float32)
+    Tensor("conv5_3/conv5_3:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("rpn_conv/3x3/rpn_conv/3x3:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("lstm_o/Reshape_2:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("lstm_o/Reshape_2:0", shape=(?, ?, ?, 512), dtype=float32)
+    Tensor("rpn_cls_score/Reshape_1:0", shape=(?, ?, ?, 20), dtype=float32)
+    Tensor("rpn_cls_prob:0", shape=(?, ?, ?, ?), dtype=float32)
+    Tensor("Reshape_2:0", shape=(?, ?, ?, 20), dtype=float32)
+    Tensor("rpn_bbox_pred/Reshape_1:0", shape=(?, ?, ?, 40), dtype=float32)
+    Tensor("Placeholder_1:0", shape=(?, 3), dtype=float32)
+    2018-06-19 20:54:46.104176: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    Traceback (most recent call last):
+      File "ctpn_test.py", line 315, in <module>
+        main_process(abspath + path)
+      File "ctpn_test.py", line 282, in main_process
+        delete_none_words_zone("./picresults")
+      File "ctpn_test.py", line 252, in delete_none_words_zone
+        x1, x2 = get_words_space(path_file)
+      File "ctpn_test.py", line 99, in get_words_space
+        if number_zeros > 15 and a[i + 1] > 0:
+    IndexError: list index out of range
+
+这个问题还没有解决，因为空格很难去掉，即：二值化处理那里以及图像长度问题，有时候会困扰很多，导致没办法做成。所以这一想法是暂时放弃了，目前的方向是在ctpn分割前或者crnn识别后进行个预处理或者后处理，而中间的东西，如果没有改变那个网络结构，我想暂时是不能够完成这个工作的。除非自己理解了这个网络，然后训练出个自己的东西，否则现在只能进行微调而不能大的变动。
+
+
+
+##  问题20180620周三
+
+
+for循环做出投影图情形
+
+
+    /usr/bin/python3.5 /home/charlie/Desktop/liqilv_bigdata_engineer_py3/test/0612.py
+    ./testpicture/0.jpg
+    ./testpicture/6.jpg
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 3, 2, 0, 0, 0, 2, 2, 0, 0, 1, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    The program 'img' received an X Window System error.
+    This probably reflects a bug in the program.
+    The error was 'BadWindow (invalid Window parameter)'.
+      (Details: serial 12956 error_code 3 request_code 15 minor_code 0)
+      (Note to programmers: normally, X errors are reported asynchronously;
+       that is, you will receive the error a while after causing it.
+       To debug your program, run it with the --sync command line
+       option to change this behavior. You can then get a meaningful
+       backtrace from your debugger if you break on the gdk_x_error() function.)
+
+    Process finished with exit code 1
+
+
+后来看了下，做了下实验，发现是图像的路径问题。
 
 ## 后续待更新
 
